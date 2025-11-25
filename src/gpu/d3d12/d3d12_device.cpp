@@ -16,6 +16,11 @@ import hellogpu.eastl;
 
 using namespace Microsoft::WRL;
 
+#ifdef HELLOGPU_COMPILER_CLANG
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wlanguage-extension-token"
+#endif
+
 namespace il::gpu
 {
 
@@ -50,7 +55,6 @@ ComPtr<IDXGIAdapter4> getHardwareAdapter(GpuDevicePreference devicePreference,
     // spdlog::info("Enumerating adapters with preference '{}'", gpuPreference);
 
     ComPtr<IDXGIAdapter4> dxgiAdapter4;
-    UINT selectedAdapterIndex = 0;
 
     ComPtr<IDXGIFactory6> dxgiFactory6;
     if(dxgiGpuPreference != DXGI_GPU_PREFERENCE_UNSPECIFIED &&
@@ -87,8 +91,6 @@ ComPtr<IDXGIAdapter4> getHardwareAdapter(GpuDevicePreference devicePreference,
             {
                 continue;
             }
-
-            selectedAdapterIndex = adapterIndex;
 
             // The adapters are ordered based on dxgiGpuPrefence. The first one should be good.
             break;
@@ -139,7 +141,6 @@ ComPtr<IDXGIAdapter4> getHardwareAdapter(GpuDevicePreference devicePreference,
             }
 
             selectedDedicatedVideoMemory = dxgiAdapterDesc1.DedicatedVideoMemory;
-            selectedAdapterIndex = adapterIndex;
         }
     }
 
@@ -163,7 +164,7 @@ eastl::unique_ptr<IDevice> createDevice(GpuDevicePreference devicePreference)
 
     auto ilDevice = eastl::make_unique<d3d12::Device>();
     ilDevice->mAdapter = hardwareAdapter;
-    
+
     return ilDevice;
 }
 } // namespace il::gpu
