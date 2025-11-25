@@ -1,0 +1,119 @@
+{
+  "version": 9,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 28,
+    "patch": 0
+  },
+  "include": [
+    "CMakeUserEnvironment.json"
+  ],
+  "configurePresets": [
+    {
+      "name": "config-vcpkg",
+      "inherits": "user-environment",
+      "generator": "Ninja",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/build/vcpkg_installed",
+        "FETCHCONTENT_BASE_DIR": "${sourceDir}/build/_deps",
+        "HELLOGPU_GRAPHICS_API": "d3d12"
+      },
+      "hidden": true
+    },
+    {
+      "name": "config-x64",
+      "cacheVariables": {
+        "VCPKG_TARGET_ARCHITECTURE": "x64",
+        "HELLOGPU_PLATFORM_ARCH": "x64"
+      },
+      "hidden": true
+    },
+    {
+      "name": "config-windows",
+      "cacheVariables": {
+        "HELLOGPU_PLATFORM": "windows"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "hidden": true
+    },
+    {
+      "name": "config-windows-msvc",
+      "inherits": "config-windows",
+      "cacheVariables": {
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/build/_deps/windowstoolchain-src/Windows.MSVC.toolchain.cmake",
+        "HELLOGPU_COMPILER": "msvc"
+      },
+      "hidden": true
+    },
+    {
+      "name": "config-windows-clang",
+      "inherits": "config-windows",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_FRONTEND_VARIANT": "CLANG",
+        "CMAKE_CXX_COMPILER_FRONTEND_VARIANT": "CLANG",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/build/_deps/windowstoolchain-src/Windows.Clang.toolchain.cmake",
+        "HELLOGPU_COMPILER": "clang"
+      },
+      "hidden": true
+    },
+    {
+      "name": "config-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "HELLOGPU_BUILD_CONFIG": "debug"
+      },
+      "hidden": true
+    },
+    {
+      "name": "config-development",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "HELLOGPU_BUILD_CONFIG": "development"
+      },
+      "hidden": true
+    },
+    {
+      "name": "config-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "HELLOGPU_BUILD_CONFIG": "release"
+      },
+      "hidden": true
+    },
+    {
+      "name": "x64-win-msvc-debug",
+      "binaryDir": "build/x64-win-msvc-debug",
+      "inherits": [ "config-vcpkg", "config-x64", "config-windows-msvc", "config-debug" ]
+    },
+    {
+      "name": "x64-win-msvc-development",
+      "binaryDir": "build/x64-win-msvc-development",
+      "inherits": [ "config-vcpkg", "config-x64", "config-windows-msvc", "config-development" ]
+    },
+    {
+      "name": "x64-win-msvc-release",
+      "binaryDir": "build/x64-win-msvc-release",
+      "inherits": [ "config-vcpkg", "config-x64", "config-windows-msvc", "config-release" ]
+    },
+    {
+      "name": "x64-win-clang-debug",
+      "binaryDir": "build/x64-win-clang-debug",
+      "inherits": [ "config-vcpkg", "config-x64", "config-windows-clang", "config-debug" ]
+    },
+    {
+      "name": "x64-win-clang-development",
+      "binaryDir": "build/x64-win-clang-development",
+      "inherits": [ "config-vcpkg", "config-x64", "config-windows-clang", "config-development" ]
+    },
+    {
+      "name": "x64-win-clang-release",
+      "binaryDir": "build/x64-win-clang-release",
+      "inherits": [ "config-vcpkg", "config-x64", "config-windows-clang", "config-release" ]
+    }
+  ]
+}
