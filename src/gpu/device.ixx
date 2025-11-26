@@ -20,6 +20,6 @@ public:
     virtual ~IDevice() = default;
 };
 
-eastl::unique_ptr<IDevice> createDevice(GpuDevicePreference devicePreference);
+eastl::uptr<IDevice> createDevice(GpuDevicePreference devicePreference);
 
 } // namespace il::gpu
